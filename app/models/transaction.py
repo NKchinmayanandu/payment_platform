@@ -15,7 +15,7 @@ class TransactionStatus(str, enum.Enum):
     FAILED = "FAILED"
     RESTARTING = "RESTARTING"
     STARTING = "STARTING"
-    REMOVED = "REMOVED"
+    REMOVED = "REMOVED" 
 
 class Transaction(Base):
     __tablename__ = "transactions"
