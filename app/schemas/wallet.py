@@ -1,6 +1,8 @@
 from pydantic import BaseModel
-from sqlalchemy import UUID
+import uuid
+from sqlalchemy.orm import Mapped
+
 class WalletOut(BaseModel):
-    id:UUID
+    id:Mapped[uuid.UUID]
     balance:int
 

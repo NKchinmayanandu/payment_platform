@@ -5,7 +5,7 @@ from datetime import datetime
 
 
 class TransactionCreate(BaseModel):
-    receiver_phone_number:int
+    receiver_phone_number: str
     amount: int
 
 
