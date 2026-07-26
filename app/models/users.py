@@ -13,6 +13,7 @@ class User(Base):
     hashed_password : Mapped[str] = mapped_column(String(255))
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
     phone_number : Mapped[int] = mapped_column(unique=True)
-    wallets : Mapped[list["Wallet"]] = relationship(
-        back_populates="owner",cascade="all, delete-orphan"
+    wallet : Mapped[list["Wallet"]] = relationship(
+        back_populates="owner",cascade="all, delete-orphan",
+        uselist=False
     )
