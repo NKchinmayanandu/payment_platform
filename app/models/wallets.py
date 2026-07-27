@@ -14,7 +14,7 @@ class Wallet(Base):
             UUID(as_uuid=True), primary_key=True, 
             default=uuid.uuid4
             )
-    owner_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE",unique=True))
+    owner_id: Mapped[int] = mapped_column(ForeignKey("users.id"),unique=True)
     balance : Mapped[int] 
     owner: Mapped["User"] = relationship(back_populates="wallet")
 

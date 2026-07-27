@@ -16,7 +16,7 @@ async def create_user_in_db(db: AsyncSession, user_in: UserCreate, hashed_passwo
     await db.flush() 
     return user
 
-async def create_wallet(user_id,db:AsyncSession):
+async def create_wallet(user_id:int,db:AsyncSession):
     wallet_exist = await db.execute(select(Wallet).where(Wallet.owner_id==user_id))
     wallet_exist = wallet_exist.scalar_one_or_none()
     if wallet_exist:
@@ -28,4 +28,7 @@ async def create_wallet(user_id,db:AsyncSession):
     db.add(wallet)
     return wallet
     
-    
+async def check_user(user_email:str,db:AsyncSession):
+    result = await db.execute(select(User).where(User.email==user_email))
+    result = result.scalar_one_or_none()
+    return result
