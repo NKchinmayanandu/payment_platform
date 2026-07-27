@@ -6,3 +6,4 @@ class WalletOut(BaseModel):
     id:Mapped[uuid.UUID]
     balance:int
 
+        
