@@ -9,10 +9,14 @@ from app.api.dependencies import get_current_user
 from fastapi import APIRouter,Depends
 from app.services.wallet_service import get_user_wallet
 from sqlalchemy.ext.asyncio import AsyncSession
-
+from app.services.wallet_service import add_deposit_user
 router = APIRouter(prefix="/wallet",tags=["/Wallet"])
 
 
-@router.get("/wallet")
-async def get_wallet(user_id:int,db:AsyncSession=Depends(get_db)):
-    return await get_user_wallet(user_id=user_id,db=db)
+@router.get("")
+async def get_wallet(current_user:User=Depends(get_current_user),db:AsyncSession=Depends(get_db)):
+    return await get_user_wallet(user_id=current_user.id,db=db)
+
+@router.post("/deposit")
+async def add_balance(add_deposit:int,current_user:User=Depends(get_current_user),db:AsyncSession=Depends(get_db)):
+    return await add_deposit_user(deposit=add_deposit,current_user=current_user,db=db)
