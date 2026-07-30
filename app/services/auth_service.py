@@ -8,7 +8,7 @@ from app.models.wallets import Wallet
 from app.schemas.token import Token
 from app.schemas.user import UserCreate, UserOut
 from app.repository.register import create_user_in_db,create_wallet,check_user
-
+import logging
 async def register_user(user_in:UserCreate,db:AsyncSession):
       result = await check_user(user_email=user_in.email,db=db)
       if result:
@@ -27,6 +27,7 @@ async def register_user(user_in:UserCreate,db:AsyncSession):
             return UserOut.model_validate(user)
 
       except Exception:
+            logging.error("could not register")
             await db.rollback()
             raise
 
