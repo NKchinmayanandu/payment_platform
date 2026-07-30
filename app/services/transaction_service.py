@@ -5,7 +5,7 @@ import logging
 from app.repository.wallet import update_wallet_db
 from app.models.transaction import Transaction,TransactionStatus
 from app.core.exceptions import ForbiddenError,NotFoundError
-
+from app.schemas.transaction import TransactionOut
 async def transfer_money(phone_number:str,amount:int,
                      db:AsyncSession,
                      current_user:User):
@@ -40,13 +40,14 @@ async def transfer_money(phone_number:str,amount:int,
         sender_wallet = wallet1.id,
         receiver_wallet = wallet2.id,
         amount = amount,
-        status = TransactionStatus.PENDING,
+        status = TransactionStatus.SUCCESS,
 
     )
     db.add(transaction)
     try:
         await db.commit()
+        await db.refresh(transaction)
     except Exception:
         logging.error("commiting to db failed")
         await db.rollback()
-    
+    return TransactionOut.model_validate(transaction)
