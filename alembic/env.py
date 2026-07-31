@@ -4,7 +4,8 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 from app.models.users import User
 from app.models.wallets import Wallet
-from app.models.transaction import Transaction,TransactionStatus
+from app.models.transaction import Transaction, TransactionStatus
+from app.models.idempotent import IdempotencyKey
 from alembic import context
 from app.db.base import Base
 from app.core.config import settings

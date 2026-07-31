@@ -4,6 +4,7 @@ from app.models.wallets import Wallet
 from sqlalchemy import select
 from app.schemas.user import UserCreate
 from app.core.exceptions import NotFoundError
+from app.models.idempotent import IdempotencyKey
 import logging 
 
 async def get_user_phone(phone_number:str,db:AsyncSession):
@@ -23,3 +24,10 @@ async def get_user_wallet_transfer(user_id1:int,user_id2:int,db:AsyncSession):
     wallets = await db.execute(stmt)
     wallets = wallets.scalars().all()
     return wallets
+
+async def check_idempotent(db:AsyncSession,current_user:User,idempotency_key):
+    stmt = select(IdempotencyKey).where(IdempotencyKey.user_id == current_user.id,
+        IdempotencyKey.key == idempotency_key)
+    result = await db.execute(stmt)
+    idempotency_key = result.scalar_one_or_none()
+    return idempotency_key

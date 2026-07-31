@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 from app.utils.logging import setup_logging
 from app.api.auth import router as auth_router 
 from app.api.wallet import router as wallet_router
+from app.api.transaction import router as transact_router
 @asynccontextmanager
 async def lifespan(app:FastAPI):
     setup_logging()
@@ -18,3 +19,4 @@ app = FastAPI(
 
 app.include_router(auth_router, prefix=settings.API_PREFIX) 
 app.include_router(wallet_router,prefix=settings.API_PREFIX)
+app.include_router(transact_router,prefix=settings.API_PREFIX)

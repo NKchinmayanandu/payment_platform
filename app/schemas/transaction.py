@@ -1,5 +1,5 @@
-from pydantic import BaseModel
-from sqlalchemy import UUID
+from pydantic import BaseModel, ConfigDict, Field
+from uuid import UUID
 from app.models.transaction import TransactionStatus
 from datetime import datetime
 
@@ -10,9 +10,10 @@ class TransactionCreate(BaseModel):
 
 
 class TransactionOut(BaseModel):
-    id: UUID
+    id: UUID = Field(validation_alias="reference_id")
+    sender_wallet: UUID
+    receiver_wallet: UUID
     amount: int
     status: TransactionStatus
-    sender_phone_number: str
-    receiver_phone_number: str
     created_at: datetime
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
