@@ -3,7 +3,7 @@ from app.api.dependencies import get_current_user
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.session import get_db
-from app.services.transaction_service import transfer_money
+from app.services.transaction_service import transfer_money,check_user_transaction
 from app.schemas.transaction import TransactionCreate, TransactionOut
 from fastapi import Depends, Header
 from uuid import UUID
@@ -23,4 +23,14 @@ async def send_money(
         idempotency_key=idempotency_key,
         db=db,
         current_user=current_user,
+    )
+
+@router.get("/transfer/history")
+async def check_transaction(
+    current_user:User=Depends(get_current_user),
+    db:AsyncSession=Depends(get_db)
+):
+    return await check_user_transaction(
+        current_user=current_user,
+        db=db
     )

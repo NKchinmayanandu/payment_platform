@@ -1,8 +1,7 @@
 from app.models.users import User
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.repository.user_transaction import get_user_phone,get_user_wallet_transfer
+from app.repository.user_transaction import get_user_phone,get_user_wallet_transfer,get_history
 import logging
-from app.repository.wallet import update_wallet_db
 from app.models.transaction import Transaction,TransactionStatus
 from app.core.exceptions import ForbiddenError,NotFoundError
 from app.schemas.transaction import TransactionOut
@@ -50,7 +49,7 @@ async def transfer_money(phone_number:str,amount:int,
 
     )
     db.add(transaction)
-    await db.flush()  # flush session (no args) to get transaction.reference_id populated
+    await db.flush()
     response = TransactionOut.model_validate(transaction)
     idempotency = IdempotencyKey(
         key=idempotency_key,
@@ -67,3 +66,23 @@ async def transfer_money(phone_number:str,amount:int,
         await db.rollback()
         raise
     return TransactionOut.model_validate(transaction)
+
+
+async def check_user_transaction(current_user:User,db:AsyncSession):
+    transactions = await get_history(current_user=current_user,
+                               db=db)
+    history = []
+
+    for tx in transactions:
+        history.append(
+            TransactionOut(
+                id=tx.id,
+                sender_name=tx.sender.owner.username,
+                receiver_name=tx.receiver.owner.username,
+                amount=tx.amount,
+                status=tx.status,
+                created_at=tx.created_at,
+            )
+        )
+
+    return history
